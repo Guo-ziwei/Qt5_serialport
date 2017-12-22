@@ -1,0 +1,341 @@
+#include "widget.h"
+#include "ui_widget.h"
+#include <QDebug>
+#include <QMessageBox>
+
+MyThread::MyThread()
+{
+
+}
+
+void MyThread::run()
+{
+    int inum = 0;/*
+    int ret;
+    int fd;
+    fd_set fdset;
+    int value;
+    int gpio_in_num = 36;
+
+    fd = gpiofd(gpio_in_num, O_RDONLY, GPIO_FLAG_TRIG_RISE|GPIO_FLAG_TRIG_FALL);
+    if (fd < 0) {
+        printf("gpiofd create error!");
+        return (-1);
+    }
+
+    FD_ZERO(&fdset);
+    while (1)
+    {
+        FD_SET(fd, &fdset);
+        ret = select(fd + 1, &fdset, NULL, NULL, NULL);
+        if (ret == 1) {
+                gpiofd_read(fd, &value);
+                printf("value : %d\n", value);
+                inum++;
+                emit send(inum);
+                usleep(500 * 1000);
+                qDebug("it's %d",inum);
+        } else if (ret < 0)
+        {
+            printf("select error!\n");
+            break;
+        }
+    }
+    ::close(fd);
+    exec();
+    */
+    while(1)
+    {
+       usleep(500 * 1000);
+       inum++;
+       emit send(inum);
+       qDebug("it's %d",inum);
+       usleep(1000 * 1000);
+    }
+    exec();
+}
+
+
+Widget::Widget(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    MyThread *myth = new MyThread;
+    connect(myth,SIGNAL(send(int)),this,SLOT(lcdnumberValset(int)));
+    myth->start();
+    serial = new QSerialPort;
+    ui->uart_sendbox->setText("Hello Qt");
+    ui->uart_sendbox->setDisabled(true);
+    ui->uart_send->setDisabled(true);
+    ui->receive_box->setDisabled(true);
+    connect(serial,SIGNAL(readyRead()),this,SLOT(readData()));
+    connect(ui->uart_send,SIGNAL(clicked(bool)),this,SLOT(writeData()));
+}
+Widget::~Widget()
+{
+    delete ui;
+}
+
+
+//led
+void Widget::on_LED_toggled(bool checked)
+{
+//    int fd;
+//    int led_num = 35;
+    if(checked)
+    {
+ //       fd = gpiofd(led_num, O_WRONLY, GPIO_FLAG_OUT_INIT_LOW);
+ //       if(fd < 0){
+ //           printf("failed to open gpio %d\n", led_num);
+ //           return  (-1);
+ //       }
+        qDebug("led open");
+ //       gpiofd_write(fd,0);
+    }
+    else
+    {
+        qDebug("fail");
+       // gpiofd_write(fd,1);
+    }
+
+}
+
+void Widget::on_LED_1_toggled(bool checked)
+{
+//    int fd;
+//    int led_num = 24;
+    if(checked)
+    {
+ //       fd = gpiofd(led_num, O_WRONLY, GPIO_FLAG_OUT_INIT_LOW);
+ //       if(fd < 0){
+ //           printf("failed to open gpio %d\n", led_num);
+ //           return  (-1);
+ //       }
+        qDebug("led1 open");
+ //       gpiofd_write(fd,0);
+    }
+    else
+    {
+        qDebug("fail1");
+        //gpiofd_write(fd,1);
+    }
+}
+
+void Widget::on_LED_2_toggled(bool checked)
+{
+//    int fd;
+//    int led_num = 30;
+    if(checked)
+    {
+ //       fd = gpiofd(led_num, O_WRONLY, GPIO_FLAG_OUT_INIT_LOW);
+ //       if(fd < 0){
+ //           printf("failed to open gpio %d\n", led_num);
+ //           return  (-1);
+ //       }
+        qDebug("led2 open");
+ //       gpiofd_write(fd,MY_CLOSE_LED);
+    }
+    else
+    {
+        qDebug("fail2");
+        //gpiofd_write(fd,1);
+    }
+}
+
+void Widget::on_LED_3_toggled(bool checked)
+{
+    //    int fd;
+    //    int led_num = 26;
+        if(checked)
+        {
+     //       fd = gpiofd(led_num, O_WRONLY, GPIO_FLAG_OUT_INIT_LOW);
+     //       if(fd < 0){
+     //           printf("failed to open gpio %d\n", led_num);
+     //           return  (-1);
+     //       }
+            qDebug("led3 open");
+     //       gpiofd_write(fd,MY_CLOSE_LED);
+        }
+        else
+        {
+            qDebug("fail3");
+            //gpiofd_write(fd,1);
+        }
+}
+
+void Widget::on_LED_4_toggled(bool checked)
+{
+    //    int fd;
+    //    int led_num = 27;
+        if(checked)
+        {
+     //       fd = gpiofd(led_num, O_WRONLY, GPIO_FLAG_OUT_INIT_LOW);
+     //       if(fd < 0){
+     //           printf("failed to open gpio %d\n", led_num);
+     //           return  (-1);
+     //       }
+            qDebug("led4 open");
+     //       gpiofd_write(fd,MY_CLOSE_LED);
+        }
+        else
+        {
+            qDebug("fail4");
+            //gpiofd_write(fd,1);
+        }
+}
+
+void Widget::on_LED_5_toggled(bool checked)
+{
+    //    int fd;
+    //    int led_num = 37;
+        if(checked)
+        {
+     //       fd = gpiofd(led_num, O_WRONLY, GPIO_FLAG_OUT_INIT_LOW);
+     //       if(fd < 0){
+     //           printf("failed to open gpio %d\n", led_num);
+     //           return  (-1);
+     //       }
+            qDebug("led5 open");
+     //       gpiofd_write(fd,MY_CLOSE_LED);
+        }
+        else
+        {
+            qDebug("fail5");
+           // gpiofd_write(fd,1);
+        }
+}
+
+void Widget::on_LED_6_toggled(bool checked)
+{
+    //    int fd;
+    //    int led_num = 32;
+        if(checked)
+        {
+     //       fd = gpiofd(led_num, O_WRONLY, GPIO_FLAG_OUT_INIT_LOW);
+     //       if(fd < 0){
+     //           printf("failed to open gpio %d\n", led_num);
+     //           return  (-1);
+     //       }
+            qDebug("led6 open");
+     //       gpiofd_write(fd,MY_CLOSE_LED);
+        }
+        else
+        {
+            qDebug("fail6");
+            //gpiofd_write(fd,1);
+        }
+}
+
+void Widget::on_LED_7_toggled(bool checked)
+{
+    //    int fd;
+    //    int led_num = 20;
+        if(checked)
+        {
+     //       fd = gpiofd(led_num, O_WRONLY, GPIO_FLAG_OUT_INIT_LOW);
+     //       if(fd < 0){
+     //           printf("failed to open gpio %d\n", led_num);
+     //           return  (-1);
+     //       }
+            qDebug("led7 open");
+     //       gpiofd_write(fd,0);
+        }
+        else
+        {
+            qDebug("fail7");
+            //gpiofd_write(fd,1);
+        }
+}
+
+
+//uart
+
+void Widget::on_uart_open_clicked()
+{
+
+    //serial->setBaudRate(QSerialPort::Baud9600,QSerialPort::AllDirections);
+    serial->setDataBits(QSerialPort::Data8);
+    serial->setFlowControl(QSerialPort::NoFlowControl);
+    serial->setParity(QSerialPort::NoParity);
+    serial->setStopBits(QSerialPort::OneStop);
+
+    if(serial->open(QIODevice::ReadWrite))
+    {
+
+
+        ui->uart_baud->setDisabled(true);
+        ui->uart_num->setDisabled(true);
+        ui->uart_open->setDisabled(true);
+        ui->uart_sendbox->setEnabled(true);
+        ui->uart_send->setEnabled(true);
+        ui->receive_box->setEnabled(true);
+        QMessageBox::about(NULL,"提示","串口打开");
+    }
+    else
+    {
+        //serial->close();
+        QMessageBox::about(NULL,"提示","串口打开失败");
+    }
+}
+
+void Widget::on_uart_num_currentIndexChanged(const QString &arg1)
+{
+    serial->setPortName(arg1);
+    qDebug()<<arg1;
+
+}
+
+void Widget::on_uart_baud_currentIndexChanged(const QString &arg1)
+{
+    serial->setBaudRate(arg1.toInt(),QSerialPort::AllDirections);
+    qDebug()<<arg1;
+}
+
+void Widget::readData()
+{
+    QByteArray data = serial->readAll();
+    while(serial->waitForReadyRead(1000))
+        data.append(serial->readAll());
+    QString read = QString(data);
+    data.clear();
+
+    ui->receive_box->setText(read);
+}
+
+void Widget::writeData()
+{
+    QByteArray data = ui->uart_sendbox->text().toLatin1();
+    char* ch;
+    ch = data.data();
+    qDebug()<<ch;
+    serial->write(data);
+}
+void Widget::on_uart_close_clicked()
+{
+    if(serial->isOpen())
+    {
+        serial->close();
+        ui->uart_baud->setEnabled(true);
+        ui->uart_num->setEnabled(true);
+        ui->uart_open->setEnabled(true);
+        ui->uart_sendbox->setDisabled(true);
+        ui->uart_send->setDisabled(true);
+        ui->receive_box->setDisabled(true);
+    }
+
+}
+
+void Widget::lcdnumberValset(int num)
+{
+    ui->lcdNumber->display(num);
+}
+
+
+void Widget::on_uart_search_clicked()
+{
+    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()) {
+        ui->uart_num->addItem(info.portName());
+    }
+}
